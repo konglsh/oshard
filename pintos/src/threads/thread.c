@@ -239,8 +239,8 @@ thread_unblock (struct thread *t)
 
 bool
 our_order(struct list_elem *a, struct list_elem *b){
-   int a_p = list_entry(a, struct thread, elem)->priority;
-   int b_p = list_entry(b, struct thread, elem)->priority;
+   int a_p = list_entry(a, struct thread, elem)->priority[list_entry(a,struct thread,elem)->pp];
+   int b_p = list_entry(b, struct thread, elem)->priority[list_entry(b,struct thread,elem)->pp];
    return a_p<b_p;
 }
 
@@ -327,14 +327,14 @@ thread_yield (void)
 void
 thread_set_priority (int new_priority) 
 {
-  thread_current ()->priority = new_priority;
+  thread_current ()->priority[thread_current ()->pp] = new_priority;
 }
 
 /* Returns the current thread's priority. */
 int
 thread_get_priority (void) 
 {
-  return thread_current ()->priority;
+  return thread_current ()->priority[thread_current ()->pp];
 }
 
 /* Sets the current thread's nice value to NICE. */
@@ -448,7 +448,8 @@ init_thread (struct thread *t, const char *name, int priority)
   t->status = THREAD_BLOCKED;
   strlcpy (t->name, name, sizeof t->name);
   t->stack = (uint8_t *) t + PGSIZE;
-  t->priority= priority;
+  t->pp=0
+  t->priority[0]= priority;
   t->magic = THREAD_MAGIC;
 }
 
