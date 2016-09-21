@@ -211,7 +211,7 @@ lock_acquire (struct lock *lock)
       }
       thread_current()->donating = lock->holder;
       printf("%s\n",thread_current()->donating->name);
-      *(lock->holder->donated) = thread_current();
+      lock->holder->donated= thread_current();
       printf("%s\n",lock->holder->donated->name);
       struct thread *d = thread_current()->donating;
       while(d!=NULL){
