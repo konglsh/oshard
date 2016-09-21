@@ -176,10 +176,10 @@ lock_init (struct lock *lock)
 
 void
 nested_donation(struct thread *thread){
-   if(*(thread->donating)!=NULL){
+   if(thread->donating!=NULL){
       printf("%d\n",thread->priority);
-      (*(thread->donating))->priority = thread->priority;
-      nested_donation(*(thread->donating));
+      thread->donating->priority = thread->priority;
+      nested_donation(thread->donating);
    }
    else return;
 }
@@ -203,21 +203,21 @@ lock_acquire (struct lock *lock)
       printf("%s\n",thread_current()->name);
       lock->default_priority=lock->holder->priority;
       printf("%s\n",lock->holder->name);
-      if(*(lock->holder->donating)!=NULL){
-         printf("%s\n", (*(lock->holder->donating))->name);
+      if(lock->holder->donating!=NULL){
+         printf("%s\n", lock->holder->donating->name);
       }
       else{
          printf("NULL\n");
       }
-      *(thread_current()->donating) = lock->holder;
-      printf("%s\n",(*(thread_current()->donating))->name);
+      thread_current()->donating = lock->holder;
+      printf("%s\n",thread_current()->donating->name);
       *(lock->holder->donated) = thread_current();
-      printf("%s\n",(*(lock->holder->donated))->name);
-      struct thread *d = *(thread_current()->donating);
+      printf("%s\n",lock->holder->donated->name);
+      struct thread *d = thread_current()->donating;
       while(d!=NULL){
          d->priority=thread_current()->priority;
          printf("%s\n",d->name);
-         d = *(d->donating);
+         d = d->donating;
          if(d!=NULL){
             printf("%s\n",d->name);
          }
@@ -258,9 +258,9 @@ lock_release (struct lock *lock)
   ASSERT (lock != NULL);
   ASSERT (lock_held_by_current_thread (lock));
   
-  if(*(thread_current()->donated)!=NULL){
-      *((*(thread_current()->donated))->donating)=NULL;
-      *(thread_current()->donated)=NULL;
+  if(thread_current()->donated!=NULL){
+      thread_current()->donated->donating=NULL;
+      thread_current()->donated=NULL;
       thread_current()->priority = lock->default_priority;
       lock->default_priority=10;
   }
