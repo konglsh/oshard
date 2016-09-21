@@ -225,12 +225,13 @@ lock_acquire (struct lock *lock)
    }
    sema_down(&lock->semaphore);
    lock->holder=thread_current();
+   /*
    if(thread_current ()->donating!=NULL){
      if(thread_current ()->donating->pp > 0){
         thread_current ()->donating->pp--;
      }
      thread_current()->donating=NULL;
-  }
+  }*/
    
    
 }
