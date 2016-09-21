@@ -195,7 +195,6 @@ thread_create (const char *name, int priority,
   /* Add to run queue. */
   
   thread_unblock (t);
-  thread_yield();
   return tid;
 }
 
@@ -235,6 +234,7 @@ thread_unblock (struct thread *t)
   t->status = THREAD_READY;
   intr_set_level (old_level);
   
+  thread_yield();
 }
 
 bool
