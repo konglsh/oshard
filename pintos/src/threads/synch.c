@@ -201,7 +201,6 @@ lock_acquire (struct lock *lock)
    
    if(lock->holder!=NULL){
       printf("%s\n",thread_current()->name);
-      lock->default_priority=lock->holder->priority;
       printf("%s\n",lock->holder->name);
       if(lock->holder->donating!=NULL){
          printf("%s\n", lock->holder->donating->name);
@@ -226,10 +225,6 @@ lock_acquire (struct lock *lock)
    sema_down(&lock->semaphore);
    lock->holder=thread_current();
    
-   if(thread_current()->donating!=NULL){
-      thread_current()->donating->priority=lock->default_priority;
-      thread_current()->donating=NULL;
-   }
 }
 
 
