@@ -195,7 +195,7 @@ thread_create (const char *name, int priority,
   /* Add to run queue. */
 
   thread_unblock (t);
-
+  printf("check");
   return tid;
 }
 
@@ -326,8 +326,9 @@ thread_yield (void)
 /* Sets the current thread's priority to NEW_PRIORITY. */
 void
 thread_set_priority (int new_priority) 
-{
-  thread_current ()->priority[thread_current ()->pp] = new_priority;
+{ 
+   printf("tsp");
+  thread_current()->priority[thread_current()->pp] = new_priority;
 }
 
 /* Returns the current thread's priority. */
