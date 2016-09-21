@@ -196,7 +196,6 @@ thread_create (const char *name, int priority,
   
   thread_unblock (t);
   thread_yield();
-  printf("check");
   return tid;
 }
 
