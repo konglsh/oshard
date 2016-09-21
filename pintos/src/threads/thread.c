@@ -328,8 +328,8 @@ thread_yield (void)
 void
 thread_set_priority (int new_priority) 
 { 
-   printf("tsp");
   thread_current()->priority[thread_current()->pp] = new_priority;
+  thread_yield();
 }
 
 /* Returns the current thread's priority. */
