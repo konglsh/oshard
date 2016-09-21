@@ -259,6 +259,10 @@ lock_release (struct lock *lock)
   ASSERT (lock_held_by_current_thread (lock));
   
   printf("R%s\n",thread_current()->name);
+  
+  lock->holder=NULL;
+  sema_up(&lock->semaphore);
+  
   if(thread_current()->donated!=NULL){
       printf("%s\n", thread_current()->donated->name);
       printf("%s\n", thread_current()->donated->donating->name);
@@ -267,8 +271,6 @@ lock_release (struct lock *lock)
       thread_current()->priority = lock->default_priority;
       lock->default_priority=10;
   }
-  lock->holder=NULL;
-  sema_up(&lock->semaphore);
   
 }
 
