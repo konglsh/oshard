@@ -173,16 +173,15 @@ lock_init (struct lock *lock)
   lock->holder = NULL;
   sema_init (&lock->semaphore, 1);
 }
-
+/*
 void
 nested_donation(struct thread *thread){
    if(thread->donating!=NULL){
-      printf("%d\n",thread->priority);
       thread->donating->priority = thread->priority;
       nested_donation(thread->donating);
    }
    else return;
-}
+}*/
 
 /* Acquires LOCK, sleeping until it becomes available if
    necessary.  The lock must not already be held by the current
