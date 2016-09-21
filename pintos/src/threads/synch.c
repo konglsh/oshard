@@ -225,6 +225,15 @@ lock_acquire (struct lock *lock)
    }
    sema_down(&lock->semaphore);
    lock->holder=thread_current();
+   
+   if(thread_current()->donating->donated!=NULL){
+      printf("%s\n", thread_current()->donating->donated->name);
+      printf("%s\n", thread_current()->donating->donated->donating->name);
+      thread_current()->donating->donated->donating=NULL;
+      thread_current()->donating->donated=NULL;
+      thread_current()->donating->priority = lock->default_priority;
+      lock->default_priority=0;
+  }
 }
 
 
@@ -258,19 +267,11 @@ lock_release (struct lock *lock)
   ASSERT (lock != NULL);
   ASSERT (lock_held_by_current_thread (lock));
   
-  printf("R%s\n",thread_current()->name);
   
   lock->holder=NULL;
   sema_up(&lock->semaphore);
   
-  if(thread_current()->donated!=NULL){
-      printf("%s\n", thread_current()->donated->name);
-      printf("%s\n", thread_current()->donated->donating->name);
-      thread_current()->donated->donating=NULL;
-      thread_current()->donated=NULL;
-      thread_current()->priority = lock->default_priority;
-      lock->default_priority=10;
-  }
+  
   
 }
 
