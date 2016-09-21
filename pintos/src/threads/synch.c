@@ -258,7 +258,10 @@ lock_release (struct lock *lock)
   ASSERT (lock != NULL);
   ASSERT (lock_held_by_current_thread (lock));
   
+  printf("R%s\n",thread_current()->name);
   if(thread_current()->donated!=NULL){
+      printf("%s\n", thread_current()->donated->name);
+      printf("%s\n", thread_current()->donated->donating->name);
       thread_current()->donated->donating=NULL;
       thread_current()->donated=NULL;
       thread_current()->priority = lock->default_priority;
