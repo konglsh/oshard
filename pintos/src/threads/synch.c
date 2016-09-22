@@ -225,7 +225,7 @@ lock_acquire (struct lock *lock)
    if(lock->holder!=NULL){
       
       thread_current()->donating = lock->holder;
-      if (list_empty (&(lock.sema)->waiters))lock->holder->pp++;
+      if (list_empty (&(lock->sema.waiters))){lock->holder->pp++;}
       struct thread *d = thread_current()->donating;
       while(d!=NULL){
          d->priority[d->pp]=thread_current()->priority[thread_current ()->pp];
