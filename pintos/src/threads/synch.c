@@ -101,15 +101,17 @@ sema_try_down (struct semaphore *sema)
    This function may be called from an interrupt handler. */
 int
 find_pp(struct semaphore *sema,struct thread *thread){
-   for(int i=0;i<10;i++){
-      if((thread->donated_list[i].lock)->semaphore == *sema){
+   int i;
+   for(i=0;i<10;i++){
+      if(!((thread->donated_list[i].lock)->semaphore ^ *sema)){
          return i+1;
       }
    }
 }
 void
 delete_priority(int *priority, int fp){
-   for(int i=fp; i<9; i++){
+   int i;
+   for(i=fp; i<9; i++){
       priority[i]=priority[i+1];
    }
 }
