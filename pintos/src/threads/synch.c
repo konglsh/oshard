@@ -100,11 +100,11 @@ sema_try_down (struct semaphore *sema)
    and wakes up one thread of those waiting for SEMA, if any.
    This function may be called from an interrupt handler. */
 int
-find_pp(struct semaphore *sema,struct thread *thread){
+find_pp(int tocompare){
    int i;
    for(i=0;i<10;i++){
-      if(!((thread->donated_list[i].lock)->semaphore ^ *sema)){
-         return i+1;
+         if(thread_current()->priority[i]==tocompare){
+            return i;
       }
    }
 }
@@ -126,10 +126,10 @@ sema_up (struct semaphore *sema)
   if (!list_empty (&sema->waiters)) {
      int k;
      sort_ready_list(&sema->waiters);
-    thread_unblock (list_entry (list_pop_back (&sema->waiters),
-                                struct thread, elem));
+     struct thread * th=list_entry (list_pop_back (&sema->waiters),struct thread, elem);
+    thread_unblock (th);
     if(thread_current()->pp>0){
-       k=find_pp(sema,thread_current());
+       k=find_pp(th->priority[th->pp]);
        delete_priority(thread_current()->priority,k);
        thread_current()->pp--;
     }
