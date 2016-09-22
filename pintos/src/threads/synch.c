@@ -225,10 +225,6 @@ lock_acquire (struct lock *lock)
    if(lock->holder!=NULL){
       
       thread_current()->donating = lock->holder;
-      struct donated_elem donated;
-      donated.thread =thread_current();
-      donated.lock =lock;
-      lock->holder->donated_list[lock->holder->pp]=donated;
       lock->holder->pp++;
       struct thread *d = thread_current()->donating;
       while(d!=NULL){
