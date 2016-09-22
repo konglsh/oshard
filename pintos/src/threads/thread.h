@@ -113,6 +113,7 @@ tid_t thread_create (const char *name, int priority, thread_func *, void *);
 
 void thread_block (void);
 void thread_unblock (struct thread *);
+bool our_order(struct list_elem *a, struct list_elem *b);
 void sort_ready_list (struct list *list);
 struct thread *thread_current (void);
 tid_t thread_tid (void);
