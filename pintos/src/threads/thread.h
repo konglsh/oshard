@@ -78,7 +78,7 @@ typedef int tid_t;
 struct donated_elem{
   struct thread *donated_thread;
   struct lock  *lock;
-}
+};
 struct thread
   {
     /* Owned by thread.c. */
