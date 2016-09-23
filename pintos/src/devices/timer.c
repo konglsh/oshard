@@ -155,7 +155,6 @@ timer_print_stats (void)
 static void
 timer_interrupt (struct intr_frame *args UNUSED)
 {
-  struct list_elem *wle;
   ticks++;
   if(list_begin(&waiting_list)!=list_end(&waiting_list)){
     
