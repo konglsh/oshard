@@ -157,6 +157,7 @@ timer_interrupt (struct intr_frame *args UNUSED)
   }
   
   thread_tick ();
+  thread_yield();
   intr_set_level(old_level);
 }
 
