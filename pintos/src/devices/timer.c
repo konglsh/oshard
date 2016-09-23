@@ -21,6 +21,7 @@
 /* Number of timer ticks since OS booted. */
 static int64_t ticks;
 static struct list waiting_list;
+list_init(&waiting_list);
 
 /* Number of loops per timer tick.
    Initialized by timer_calibrate(). */
@@ -45,7 +46,7 @@ timer_init (void)
   outb (0x40, count & 0xff);
   outb (0x40, count >> 8);
   
-  list_init(&waiting_list);
+
 
   intr_register_ext (0x20, timer_interrupt, "8254 Timer");
 }
@@ -146,13 +147,9 @@ timer_interrupt (struct intr_frame *args UNUSED)
 {
   enum intr_level old_level;
   ticks++;
-  printf("%d\n",ticks);
   struct list_elem *list_elem;
-  printf("A\n");
   list_elem = list_begin(&waiting_list);
-  printf("b\n");
   old_level = intr_disable();
-  printf("c\n");
   while(list_elem!=NULL && list_elem->next!=NULL){
     printf("d\n");
     if(--list_entry(list_elem,struct thread, elem)->ticks==0){
@@ -163,12 +160,9 @@ timer_interrupt (struct intr_frame *args UNUSED)
       printf("f\n");
     }
     list_elem = list_next(list_elem);
-    printf("g\n");
   }
-  printf("h\n");
   
   thread_tick ();
-  printf("i\n");
   
   intr_set_level(old_level);
   printf("j\n");
