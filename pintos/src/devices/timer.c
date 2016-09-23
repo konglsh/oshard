@@ -158,7 +158,7 @@ remove_ticks(struct list_elem *wle){
         thread_unblock(list_entry(wle,struct thread, elem));
     }
     list_entry(wle,struct thread, elem)->ticks--;
-    remove_ticks(list_nest(wle));
+    remove_ticks(list_next(wle));
   }
 }
 /* Timer interrupt handler. */
