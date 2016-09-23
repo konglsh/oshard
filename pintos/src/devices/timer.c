@@ -147,11 +147,9 @@ timer_print_stats (void)
 static void
 timer_interrupt (struct intr_frame *args UNUSED)
 {
-  enum intr_level old_level;
   ticks++;
   struct list_elem *wle;
   wle = list_begin(&waiting_list);
-  old_level = intr_disable();
   while(wle!=NULL && wle->prev!=NULL && wle->next!=NULL){
     printf("d\n");
     printf("%d\n",list_entry(wle,struct thread, elem)->ticks);
@@ -167,7 +165,6 @@ timer_interrupt (struct intr_frame *args UNUSED)
   
   thread_tick ();
   
-  intr_set_level(old_level);
   printf("j\n");
 }
 
