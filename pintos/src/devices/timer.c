@@ -152,7 +152,6 @@ timer_interrupt (struct intr_frame *args UNUSED)
   while(list_elem!=NULL && list_elem->next!=NULL){
     if(--list_entry(list_elem,struct thread, elem)->ticks==0){
       thread_unblock(list_entry(list_elem,struct thread, elem));
-      thread_yield();
       list_remove(list_elem);
     }
     list_elem = list_next(list_elem);
