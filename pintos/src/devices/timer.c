@@ -100,13 +100,11 @@ timer_elapsed (int64_t then)
 void
 timer_sleep (int64_t ticks) 
 {
-  printf("b\n");
-  enum intr_level old_level;
   int64_t start = timer_ticks ();
   ASSERT (intr_get_level () == INTR_ON);
   thread_current()->ticks=ticks;
-  list_push_front(&waiting_list, &(thread_current()->elem));
-  /*sort_ready_list(&waiting_list);*/
+  list_push_front(&waiting_list, &thread_current()->elem);
+  sort_ready_list(&waiting_list);
   intr_disable();
   thread_block();
 }
@@ -149,11 +147,7 @@ timer_interrupt (struct intr_frame *args UNUSED)
     struct list_elem *wle2;
     wle = list_begin(&waiting_list);
     while(wle!=NULL && wle->prev!=NULL && wle->next!=NULL){
-      printf("d\n");
-      printf("%d\n",wle);
-      printf("%d\n",list_entry(wle,struct thread, elem)->ticks);
       if(list_entry(wle,struct thread, elem)->ticks<=0){
-        printf("%d\n",list_entry(wle,struct thread, elem)->ticks);
         thread_unblock(list_entry(wle,struct thread, elem));
         list_remove(wle);
       }
