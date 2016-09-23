@@ -21,7 +21,6 @@
 /* Number of timer ticks since OS booted. */
 static int64_t ticks;
 static struct list waiting_list;
-list_init(&waiting_list);
 
 /* Number of loops per timer tick.
    Initialized by timer_calibrate(). */
@@ -103,7 +102,7 @@ timer_sleep (int64_t ticks)
 {
   enum intr_level old_level;
   int64_t start = timer_ticks ();
-  if((&wating_list)->next)==NULL){
+  if((&waiting_list)->next==NULL){
     list_init(&waiting_list);
   }
   ASSERT (intr_get_level () == INTR_ON);
