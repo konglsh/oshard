@@ -46,7 +46,6 @@ timer_init (void)
   outb (0x40, count >> 8);
   
   list_init(&waiting_list);
-  printf("A");
 
   intr_register_ext (0x20, timer_interrupt, "8254 Timer");
 }
@@ -149,8 +148,7 @@ timer_interrupt (struct intr_frame *args UNUSED)
   struct list_elem *list_elem;
   list_elem = list_begin(&waiting_list);
   old_level = intr_disable();
-  int count=2;
-  while(list_elem!=NULL && list_elem->next!=NULL){
+  while(!is_tail(list_elem)){
     printf("d\n");
     printf("%d\n",list_entry(list_elem,struct thread, elem)->ticks);
     if(--list_entry(list_elem,struct thread, elem)->ticks==0){
@@ -161,7 +159,6 @@ timer_interrupt (struct intr_frame *args UNUSED)
       printf("f\n");
     }
     list_elem = list_next(list_elem);
-    count--;
   }
   
   thread_tick ();
