@@ -105,8 +105,9 @@ timer_sleep (int64_t ticks)
   ASSERT (intr_get_level () == INTR_ON);
   thread_current()->ticks=ticks;
   list_push_front(&waiting_list, &thread_current()->elem);
-  intr_disable();
+  old_level = intr_disable();
   thread_block();
+  intr_set_level(old_level);
 }
 
 /* Suspends execution for approximately MS milliseconds. */
@@ -144,6 +145,7 @@ timer_interrupt (struct intr_frame *args UNUSED)
   ticks++;
   struct list_elem *list_elem;
   list_elem = list_begin(&waiting_list);
+  old_level = intr_disable();
   while(list_elem!=NULL && list_elem->next!=NULL){
     if(--list_entry(list_elem,struct thread, elem)->ticks==0){
       thread_unblock(list_entry(list_elem,struct thread, elem));
@@ -151,7 +153,9 @@ timer_interrupt (struct intr_frame *args UNUSED)
     }
     list_elem = list_next(list_elem);
   }
+  
   thread_tick ();
+  intr_set_level(old_level);
 }
 
 /* Returns true if LOOPS iterations waits for more than one timer
