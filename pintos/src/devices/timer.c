@@ -114,13 +114,17 @@ sort_waiting_list (struct list *list){
 void
 timer_sleep (int64_t ticks) 
 {
+  enum intr_level old_level;
+  old_level = intr_disable();
+  
   int64_t start = timer_ticks ();
   ASSERT (intr_get_level () == INTR_ON);
   thread_current()->ticks=ticks;
   list_push_front(&waiting_list, &thread_current()->elem);
   sort_ready_list(&waiting_list);
-  intr_disable();
+  
   thread_block();
+  intr_set_level (old_level);
 }
 
 /* Suspends execution for approximately MS milliseconds. */
@@ -165,6 +169,9 @@ remove_ticks(struct list_elem *wle){
 static void
 timer_interrupt (struct intr_frame *args UNUSED)
 {
+  enum intr_level old_level;
+  old_level = intr_disable();
+  
   ticks++;
   if(list_begin(&waiting_list)!=list_end(&waiting_list)){
     struct list_elem *wle;
@@ -183,6 +190,8 @@ timer_interrupt (struct intr_frame *args UNUSED)
     
   }
   thread_tick ();
+  
+  intr_set_level (old_level);
 }
 
 /* Returns true if LOOPS iterations waits for more than one timer
