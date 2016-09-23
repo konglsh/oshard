@@ -103,6 +103,7 @@ timer_sleep (int64_t ticks)
   enum intr_level old_level;
   int64_t start = timer_ticks ();
   if((&waiting_list)->head.next==NULL){
+    printf("A\n");
     list_init(&waiting_list);
   }
   ASSERT (intr_get_level () == INTR_ON);
@@ -152,7 +153,7 @@ timer_interrupt (struct intr_frame *args UNUSED)
   list_elem = list_begin(&waiting_list);
   old_level = intr_disable();
   int count=2;
-  while(count>0){
+  while(list_elem!=NULL && list_elem->next!=NULL){
     printf("d\n");
     printf("%d\n",list_entry(list_elem,struct thread, elem)->ticks);
     if(--list_entry(list_elem,struct thread, elem)->ticks==0){
