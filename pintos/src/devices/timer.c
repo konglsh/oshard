@@ -19,6 +19,7 @@
 
 /* Number of timer ticks since OS booted. */
 static int64_t ticks;
+static struct list wating_list;
 
 /* Number of loops per timer tick.
    Initialized by timer_calibrate(). */
@@ -99,8 +100,9 @@ timer_sleep (int64_t ticks)
   int64_t start = timer_ticks ();
 
   ASSERT (intr_get_level () == INTR_ON);
-  while (timer_elapsed (start) < ticks) 
-    thread_yield ();
+  thread_current()->ticks=ticks;
+  list_push_front(&waiting_list, thread_current()->list_elem);
+  thread_block();
 }
 
 /* Suspends execution for approximately MS milliseconds. */
@@ -136,6 +138,14 @@ static void
 timer_interrupt (struct intr_frame *args UNUSED)
 {
   ticks++;
+  struct list_elem *list_elem;
+  list_elem = list_begin(&waiting_list);
+  while(!is_tail(list_elem)){
+    if(--list_entry(list_elem,struct thread, elem)==0){
+      thread_unblock(list_entry(list_elem,struct thread, elem));
+    }
+    list_elem = list_next(list_elem);
+  }
   thread_tick ();
 }
 
