@@ -163,9 +163,7 @@ remove_ticks(struct list_elem *wle){
     if(list_entry(wle,struct thread, elem)->ticks<=0){
         thread_unblock(list_entry(wle,struct thread, elem));
     }
-    printf("%d\n",list_entry(wle,struct thread, elem)->ticks);
     list_entry(wle,struct thread, elem)->ticks--;
-    printf("%d\n",list_entry(wle,struct thread, elem)->ticks);
     remove_ticks(list_prev(wle));
   }
 }
