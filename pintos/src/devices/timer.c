@@ -148,21 +148,22 @@ static void
 timer_interrupt (struct intr_frame *args UNUSED)
 {
   ticks++;
-  struct list_elem *wle;
-  wle = list_begin(&waiting_list);
-  while(wle!=NULL && wle->prev!=NULL && wle->next!=NULL){
-    printf("d\n");
-    printf("%d\n",list_entry(wle,struct thread, elem)->ticks);
-    if(--list_entry(wle,struct thread, elem)->ticks==0){
+  if(list_begin(&waiting_list)!=list_end(&wating_list)){
+    struct list_elem *wle;
+    wle = list_begin(&waiting_list);
+    while(wle!=NULL && wle->prev!=NULL && wle->next!=NULL){
+      printf("d\n");
       printf("%d\n",list_entry(wle,struct thread, elem)->ticks);
-      thread_unblock(list_entry(wle,struct thread, elem));
-      printf("e\n");
-      list_remove(wle);
-      printf("f\n");
+      if(--list_entry(wle,struct thread, elem)->ticks==0){
+        printf("%d\n",list_entry(wle,struct thread, elem)->ticks);
+        thread_unblock(list_entry(wle,struct thread, elem));
+        printf("e\n");
+        list_remove(wle);
+        printf("f\n");
+      }
+      wle = list_next(wle);
     }
-    wle = list_next(wle);
   }
-  
   thread_tick ();
   
   printf("j\n");
