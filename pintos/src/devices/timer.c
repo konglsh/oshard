@@ -109,6 +109,7 @@ timer_sleep (int64_t ticks)
   sort_ready_list(&waiting_list);
   old_level = intr_disable();
   thread_block();
+  thread_yield();
   intr_set_level(old_level);
 }
 
