@@ -102,7 +102,7 @@ timer_sleep (int64_t ticks)
 {
   enum intr_level old_level;
   int64_t start = timer_ticks ();
-  if((&waiting_list)->next==NULL){
+  if((&waiting_list)->head->next==NULL){
     list_init(&waiting_list);
   }
   ASSERT (intr_get_level () == INTR_ON);
