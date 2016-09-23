@@ -96,15 +96,29 @@ timer_elapsed (int64_t then)
   return timer_ticks () - then;
 }
 
+bool
+our_order3(struct list_elem *a, struct list_elem *b){
+   int a_p = list_entry(a, struct thread, elem)->ticks;
+   int b_p = list_entry(b, struct thread, elem)->ticks;
+   return a_p<b_p;
+}
+
+void
+sort_waiting_list (struct list *list){
+   list_less_func *less = &our_order3;
+   
+   list_sort(list, less,0);
+}
+
 /* Suspends execution for approximately TICKS timer ticks. */
 void
 timer_sleep (int64_t ticks) 
 {
   int64_t start = timer_ticks ();
   ASSERT (intr_get_level () == INTR_ON);
-  thread_current()->ticks=ticks;
+  thread_current()->ticks=ticks+start;
   list_push_front(&waiting_list, &thread_current()->elem);
-  sort_ready_list(&waiting_list);
+  sort_waiting_list(&waiting_list);
   intr_disable();
   thread_block();
 }
@@ -145,15 +159,19 @@ timer_interrupt (struct intr_frame *args UNUSED)
   ticks++;
   if(list_begin(&waiting_list)!=list_end(&waiting_list)){
     
-    wle = list_begin(&waiting_list);
-    while(wle!=NULL && wle->prev!=NULL && wle->next!=NULL){
+    /*wle = list_begin(&waiting_list);*/
+    while(list_entry(list_begin(&waiting_list), struct thread, elem)->ticks==ticks
+          && list_begin(&waiting_list)!=list_end(&waiting_list)){
+      list_pop_front(&waiting_list);
+    }
+    /*while(wle!=NULL && wle->prev!=NULL && wle->next!=NULL){
       printf("%d\n",wle);
       if(list_entry(wle,struct thread, elem)->ticks<=0){
         thread_unblock(list_entry(wle,struct thread, elem));
       }
       list_entry(wle,struct thread, elem)->ticks--;
       wle=wle->next;
-    }
+    }*/
     
   }
   thread_tick ();
