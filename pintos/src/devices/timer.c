@@ -105,11 +105,10 @@ timer_sleep (int64_t ticks)
   int64_t start = timer_ticks ();
   ASSERT (intr_get_level () == INTR_ON);
   thread_current()->ticks=ticks;
-  list_push_front(&waiting_list, &thread_current()->elem);
-  sort_ready_list(&waiting_list);
-  old_level = intr_disable();
+  list_push_front(&waiting_list, &(thread_current()->elem));
+  /*sort_ready_list(&waiting_list);*/
+  intr_disable();
   thread_block();
-  intr_set_level(old_level);
 }
 
 /* Suspends execution for approximately MS milliseconds. */
