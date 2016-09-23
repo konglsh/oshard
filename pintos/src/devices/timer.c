@@ -158,7 +158,7 @@ timer_interrupt (struct intr_frame *args UNUSED)
         list_remove(wle);
         printf("f\n");
       }
-      if(list_entry(wle,struct thread, elem)->ticks >0)list_entry(wle,struct thread, elem)->ticks--;
+      if(list_entry(wle,struct thread, elem)->ticks >0){list_entry(wle,struct thread, elem)->ticks--;}
       wle = list_next(wle);
     }
   }
