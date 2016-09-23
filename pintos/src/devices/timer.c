@@ -45,7 +45,8 @@ timer_init (void)
   outb (0x40, count & 0xff);
   outb (0x40, count >> 8);
   
-
+  list_init(&waiting_list);
+  printf("A");
 
   intr_register_ext (0x20, timer_interrupt, "8254 Timer");
 }
@@ -102,10 +103,6 @@ timer_sleep (int64_t ticks)
 {
   enum intr_level old_level;
   int64_t start = timer_ticks ();
-  if((&waiting_list)->head.next==NULL){
-    printf("A\n");
-    list_init(&waiting_list);
-  }
   ASSERT (intr_get_level () == INTR_ON);
   thread_current()->ticks=ticks;
   list_push_front(&waiting_list, &thread_current()->elem);
