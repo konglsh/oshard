@@ -141,17 +141,18 @@ timer_print_stats (void)
 static void
 timer_interrupt (struct intr_frame *args UNUSED)
 {
+  struct list_elem *wle;
   ticks++;
   if(list_begin(&waiting_list)!=list_end(&waiting_list)){
-    struct list_elem **wle;
-    *wle = list_begin(&waiting_list);
-    while(*wle!=NULL && (*wle)->prev!=NULL && (*wle)->next!=NULL){
-      printf("%d\n",*wle);
-      if(list_entry(*wle,struct thread, elem)->ticks<=0){
-        thread_unblock(list_entry(*wle,struct thread, elem));
+    
+    wle = list_begin(&waiting_list);
+    while(wle!=NULL && wle->prev!=NULL && wle->next!=NULL){
+      printf("%d\n",wle);
+      if(list_entry(wle,struct thread, elem)->ticks<=0){
+        thread_unblock(list_entry(wle,struct thread, elem));
       }
-      list_entry(*wle,struct thread, elem)->ticks--;
-      *wle=(*wle)->next;
+      list_entry(wle,struct thread, elem)->ticks--;
+      wle=wle->next;
     }
     
   }
