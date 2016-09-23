@@ -100,7 +100,7 @@ timer_elapsed (int64_t then)
 void
 timer_sleep (int64_t ticks) 
 {
-  printf("b"\n);
+  printf("b\n");
   enum intr_level old_level;
   int64_t start = timer_ticks ();
   ASSERT (intr_get_level () == INTR_ON);
