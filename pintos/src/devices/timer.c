@@ -20,7 +20,7 @@
 
 /* Number of timer ticks since OS booted. */
 static int64_t ticks;
-static struct list waiting_list;
+struct list waiting_list;
 
 /* Number of loops per timer tick.
    Initialized by timer_calibrate(). */
@@ -150,7 +150,13 @@ timer_print_stats (void)
 {
   printf ("Timer: %"PRId64" ticks\n", timer_ticks ());
 }
-
+
+/*void
+remove_ticks(struct list_elem *wle){
+  if(wle!=NULL && wle->prev!=NULL && wle->next!=NULL){
+    
+  }
+}*/
 /* Timer interrupt handler. */
 static void
 timer_interrupt (struct intr_frame *args UNUSED)
