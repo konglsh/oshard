@@ -159,7 +159,7 @@ timer_interrupt (struct intr_frame *args UNUSED)
         printf("f\n");
       }
       list_entry(wle,struct thread, elem)->ticks--;
-      wle = wle->next;
+      *wle = *wle->next;
     }
   }
   thread_tick ();
