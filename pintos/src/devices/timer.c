@@ -103,7 +103,7 @@ timer_sleep (int64_t ticks)
 
   ASSERT (intr_get_level () == INTR_ON);
   thread_current()->ticks=ticks;
-  list_push_front(&waiting_list, thread_current()->elem);
+  list_push_front(&waiting_list, &thread_current()->elem);
   thread_block();
 }
 
