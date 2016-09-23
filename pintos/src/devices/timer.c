@@ -100,6 +100,7 @@ timer_elapsed (int64_t then)
 void
 timer_sleep (int64_t ticks) 
 {
+  enum intr_level old_level;
   int64_t start = timer_ticks ();
 
   ASSERT (intr_get_level () == INTR_ON);
@@ -142,6 +143,7 @@ timer_print_stats (void)
 static void
 timer_interrupt (struct intr_frame *args UNUSED)
 {
+  enum intr_level old_level;
   ticks++;
   struct list_elem *list_elem;
   list_elem = list_begin(&waiting_list);
