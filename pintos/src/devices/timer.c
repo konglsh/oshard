@@ -144,16 +144,16 @@ timer_interrupt (struct intr_frame *args UNUSED)
   ticks++;
   if(list_begin(&waiting_list)!=list_end(&waiting_list)){
     struct list_elem *wle;
-    struct list_elem *wle2;
     wle = list_begin(&waiting_list);
     while(wle!=NULL && wle->prev!=NULL && wle->next!=NULL){
+      printf("%d\n",wle);
       if(list_entry(wle,struct thread, elem)->ticks<=0){
         thread_unblock(list_entry(wle,struct thread, elem));
-        list_remove(wle);
       }
       list_entry(wle,struct thread, elem)->ticks--;
-      wle=list_end(&waiting_list);
+      wle=wle->next;
     }
+    
   }
   thread_tick ();
 }
