@@ -158,6 +158,8 @@ timer_interrupt (struct intr_frame *args UNUSED)
   ticks++;
   if(list_begin(&waiting_list)!=list_end(&waiting_list)){
     printf("A\n");
+    printf("%d\n", list_entry(list_begin(&waiting_list), struct thread, elem)->ticks);
+    printf("%d\n",ticks);
     /*wle = list_begin(&waiting_list);*/
     while(list_entry(list_begin(&waiting_list), struct thread, elem)->ticks==ticks
           && list_begin(&waiting_list)!=list_end(&waiting_list)){
