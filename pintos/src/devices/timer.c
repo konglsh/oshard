@@ -105,7 +105,7 @@ timer_sleep (int64_t ticks)
   ASSERT (intr_get_level () == INTR_ON);
   thread_current()->ticks=ticks;
   list_push_front(&waiting_list, &thread_current()->elem);
-  if(list_begin(&waiting_list)==list_end(&waiting_list)){
+  if(list_begin(&waiting_list)!=list_end(&waiting_list)){
     printf("A\n");
   }
   sort_ready_list(&waiting_list);
