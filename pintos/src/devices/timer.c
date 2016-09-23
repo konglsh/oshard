@@ -154,6 +154,7 @@ timer_interrupt (struct intr_frame *args UNUSED)
   int count=2;
   while(count>0){
     printf("d\n");
+    printf("%d\n",list_entry(list_elem,struct thread, elem)->ticks);
     if(--list_entry(list_elem,struct thread, elem)->ticks==0){
       printf("%d\n",list_entry(list_elem,struct thread, elem)->ticks);
       thread_unblock(list_entry(list_elem,struct thread, elem));
