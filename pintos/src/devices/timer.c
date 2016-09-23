@@ -155,9 +155,9 @@ timer_interrupt (struct intr_frame *args UNUSED)
     }
     list_elem = list_next(list_elem);
   }
-  
-  thread_tick ();
   thread_yield();
+  thread_tick ();
+  
   intr_set_level(old_level);
 }
 
