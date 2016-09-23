@@ -159,7 +159,6 @@ timer_print_stats (void)
 
 void
 remove_ticks(struct list_elem *wle){
-  printf("%d\n",wle);
   if(wle!=NULL && wle->prev!=NULL && wle->next!=NULL){
     if(list_entry(wle,struct thread, elem)->ticks<=0){
         thread_unblock(list_entry(wle,struct thread, elem));
