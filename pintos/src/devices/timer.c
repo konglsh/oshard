@@ -146,21 +146,19 @@ timer_interrupt (struct intr_frame *args UNUSED)
 {
   ticks++;
   if(list_begin(&waiting_list)!=list_end(&waiting_list)){
-    struct list_elem *wle;
-    struct list_elem *wle2;
-    wle = list_begin(&waiting_list);
-    while(wle!=NULL && wle->prev!=NULL && wle->next!=NULL){
+    struct list_elem **wle;
+    *wle = list_begin(&waiting_list);
+    while(*wle!=NULL && (*wle)->prev!=NULL && (*wle)->next!=NULL){
       printf("d\n");
-      printf("%d\n",wle);
-      printf("%d\n",list_entry(wle,struct thread, elem)->ticks);
-      if(list_entry(wle,struct thread, elem)->ticks<=0){
-        printf("%d\n",list_entry(wle,struct thread, elem)->ticks);
-        thread_unblock(list_entry(wle,struct thread, elem));
-        wle2=list_remove(wle);
+      printf("%d\n",*wle);
+      printf("%d\n",list_entry(*wle,struct thread, elem)->ticks);
+      if(list_entry(*wle,struct thread, elem)->ticks<=0){
+        printf("%d\n",list_entry(*wle,struct thread, elem)->ticks);
+        thread_unblock(list_entry(*wle,struct thread, elem));
+        list_remove(*wle);
       }
-      else{wle2=list_next(wle);}
-      list_entry(wle,struct thread, elem)->ticks--;
-      wle = wle2;
+      list_entry(*wle,struct thread, elem)->ticks--;
+      *wle=(*wle)->next;
     }
   }
   thread_tick ();
