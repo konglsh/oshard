@@ -151,7 +151,8 @@ timer_interrupt (struct intr_frame *args UNUSED)
   struct list_elem *list_elem;
   list_elem = list_begin(&waiting_list);
   old_level = intr_disable();
-  while(list_elem!=NULL && list_elem->next!=NULL){
+  int count=2;
+  while(count>0){
     printf("d\n");
     if(--list_entry(list_elem,struct thread, elem)->ticks==0){
       printf("%d\n",list_entry(list_elem,struct thread, elem)->ticks);
@@ -161,6 +162,7 @@ timer_interrupt (struct intr_frame *args UNUSED)
       printf("f\n");
     }
     list_elem = list_next(list_elem);
+    count--;
   }
   
   thread_tick ();
