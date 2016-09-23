@@ -171,9 +171,6 @@ remove_ticks(struct list_elem *wle){
 static void
 timer_interrupt (struct intr_frame *args UNUSED)
 {
-  enum intr_level old_level;
-  old_level = intr_disable();
-  
   ticks++;
   if(list_begin(&waiting_list)!=list_end(&waiting_list)){
     struct list_elem *wle;
@@ -192,8 +189,6 @@ timer_interrupt (struct intr_frame *args UNUSED)
     
   }
   thread_tick ();
-  
-  intr_set_level (old_level);
 }
 
 /* Returns true if LOOPS iterations waits for more than one timer
