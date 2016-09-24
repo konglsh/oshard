@@ -155,11 +155,13 @@ remove_ticks(struct list_elem *wle){
   if(wle!=NULL && wle->prev!=NULL && wle->next!=NULL){
     if(list_entry(wle,struct thread, elem)->ticks<=0){
         thread_unblock(list_entry(wle,struct thread, elem));
-        wle->prev->next = wle->next;
-        wle->next->prev = wle->prev;
+        list_entry(wle,struct thread, elem)->ticks--;
+        remove_ticks(list_remove(wle));
     }
-    list_entry(wle,struct thread, elem)->ticks--;
-    remove_ticks(list_next(wle));
+    else{
+      list_entry(wle,struct thread, elem)->ticks--;
+      remove_ticks(list_next(wle));
+    }
   }
 }
 /* Timer interrupt handler. */
