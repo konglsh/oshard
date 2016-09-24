@@ -175,11 +175,11 @@ timer_interrupt (struct intr_frame *args UNUSED)
       struct list_elem * wle;
       wle = list_back(&waiting_list);
     
-    while(wle!=NULL && wle->prev!=NULL && wle->next!=NULL){
+    /*while(wle!=NULL && wle->prev!=NULL && wle->next!=NULL){*/
       /*printf("%d\n",ticks);
       printf("%d\n",wle);
       printf("%d\n",list_next(wle));*/
-      if(list_entry(wle,struct thread, elem)->ticks<=0){
+      /*if(list_entry(wle,struct thread, elem)->ticks<=0){
         printf("A\n");
         printf("%d\n",ticks);
         thread_unblock(list_entry(wle,struct thread, elem));
@@ -192,10 +192,10 @@ timer_interrupt (struct intr_frame *args UNUSED)
         list_entry(wle,struct thread, elem)->ticks--;
         wle = wle->prev;
       }
-      /*printf("%d\n",wle);*/
+      printf("%d\n",wle);
       
-    }
-    /*remove_ticks(wle);*/
+    }*/
+    remove_ticks(wle);
     }
   thread_tick ();
 }
