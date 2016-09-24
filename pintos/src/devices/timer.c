@@ -157,19 +157,19 @@ timer_print_stats (void)
 {
   printf ("Timer: %"PRId64" ticks\n", timer_ticks ());
 }
-
+/*
 void
-remove_ticks(struct list_elem **wle){
-  if((*wle)!=NULL && (*wle)->prev!=NULL && (*wle)->next!=NULL){
-    if(list_entry(*wle,struct thread, elem)->ticks<=0){
-        thread_unblock(list_entry(*wle,struct thread, elem));
-        (*wle)->next->prev = (*wle)->prev;
-        (*wle)->prev->next = (*wle)->next;
+remove_ticks(struct list_elem *wle){
+  if(wle!=NULL && wle->prev!=NULL && wle->next!=NULL){
+    if(list_entry(wle,struct thread, elem)->ticks<=0){
+        thread_unblock(list_entry(wle,struct thread, elem));
+        wle->next->prev = wle->prev;
+        wle->prev->next = wle->next;
     }
-    list_entry(*wle,struct thread, elem)->ticks--;
-    remove_ticks(&list_prev(*wle));
+    list_entry(wle,struct thread, elem)->ticks--;
+    remove_ticks(&list_prev(wle));
   }
-}
+}*/
 /* Timer interrupt handler. */
 static void
 timer_interrupt (struct intr_frame *args UNUSED)
@@ -181,17 +181,14 @@ timer_interrupt (struct intr_frame *args UNUSED)
     
     struct list_elem *wle;
     wle = list_back(&waiting_list);
-    /*while(wle!=NULL && wle->prev!=NULL && wle->next!=NULL){
-      printf("%d\n",wle);
-      printf("%d\n",list_next(wle));
+    while(wle!=NULL && wle->prev!=NULL && wle->next!=NULL){
       if(list_entry(wle,struct thread, elem)->ticks<=0){
         thread_unblock(list_entry(wle,struct thread, elem));
+        wle->prev->next=wle->next;
+        wle->next->prev=wle->prev;
       }
       list_entry(wle,struct thread, elem)->ticks--;
       wle=list_next(wle);
-      printf("%d\n",wle);
-    }*/
-    remove_ticks(&wle);
     intr_set_level (old_level);
   }
   thread_tick ();
