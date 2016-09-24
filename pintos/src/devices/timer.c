@@ -113,11 +113,12 @@ sort_waiting_list (struct list *list){
 void
 timer_sleep (int64_t ticks) 
 {
+  int64_t start = timer_ticks ();
+  ASSERT (intr_get_level () == INTR_ON);
+  
   enum intr_level old_level;
   old_level = intr_disable();
   
-  int64_t start = timer_ticks ();
-  ASSERT (intr_get_level () == INTR_ON);
   thread_current()->ticks=ticks;
   list_push_front(&waiting_list, &thread_current()->elem);
 
