@@ -180,7 +180,7 @@ timer_interrupt (struct intr_frame *args UNUSED)
       /*printf("%d\n",ticks);
       printf("%d\n",wle);
       printf("%d\n",list_next(wle));*/
-      if(list_entry(wle,struct thread, elem)->ticks<=0){
+      if(list_entry(wle,struct thread, elem)->ticks<=1){
         tmp = list_remove(wle)->prev;
         thread_unblock(list_entry(wle,struct thread, elem));
         wle =tmp;
