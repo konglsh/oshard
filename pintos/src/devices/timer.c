@@ -179,8 +179,10 @@ timer_interrupt (struct intr_frame *args UNUSED)
       printf("%d\n",wle);
       printf("%d\n",list_next(wle));
       if(list_entry(wle,struct thread, elem)->ticks<=0){
-        thread_unblock(list_entry(wle,struct thread, elem));
-        wle =list_remove(wle)->prev;
+        if (list_entry(wle,struct thread, elem)->status==THREAD_BLOCKED){
+          thread_unblock(list_entry(wle,struct thread, elem));
+          wle =list_remove(wle)->prev;
+        }
       }
       else{
         list_entry(wle,struct thread, elem)->ticks--;
