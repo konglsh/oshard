@@ -177,7 +177,7 @@ timer_interrupt (struct intr_frame *args UNUSED)
     wle = list_begin(&waiting_list);
     printf("A\n");
     while(list_entry(list_begin(&waiting_list),struct thread, elem)->ticks==0){
-      
+      printf("B\n");
       list_pop_front(&waiting_list);
     }
     /*while(wle!=NULL && wle->prev!=NULL && wle->next!=NULL){
