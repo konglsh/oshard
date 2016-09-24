@@ -177,6 +177,7 @@ timer_interrupt (struct intr_frame *args UNUSED)
     while(list_entry(list_begin(&waiting_list),struct thread, elem)->ticks==0){
       if(list_entry(list_begin(&waiting_list),struct thread, elem)->status==THREAD_BLOCKED){
         thread_unblock(list_entry(list_begin(&waiting_list),struct thread, elem));
+        thread_yield();
       }
       list_pop_front(&waiting_list);
     }
