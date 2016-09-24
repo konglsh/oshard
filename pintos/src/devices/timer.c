@@ -171,11 +171,9 @@ timer_interrupt (struct intr_frame *args UNUSED)
 {
   ticks++;
   if(list_begin(&waiting_list)!=list_end(&waiting_list)){
-    /*enum intr_level old_level;
-    old_level = intr_disable();*/
     while(list_entry(list_begin(&waiting_list),struct thread, elem)->ticks==0){
         thread_unblock(list_entry(list_begin(&waiting_list),struct thread, elem));
-        thread_tick();
+        
       list_pop_front(&waiting_list);
       if(list_begin(&waiting_list)==list_end(&waiting_list)){
         break;
@@ -187,6 +185,7 @@ timer_interrupt (struct intr_frame *args UNUSED)
       list_entry(wle,struct thread, elem)->ticks--;
       wle=wle->next;
     }
+    
     /*while(wle!=NULL && wle->prev!=NULL && wle->next!=NULL){
       printf("%d\n",wle);
       printf("%d\n",list_next(wle));
@@ -202,7 +201,7 @@ timer_interrupt (struct intr_frame *args UNUSED)
       
     }*/
     /*remove_ticks(wle);*/
-    /*intr_set_level(old_level);*/
+    thread_tick();
   }
   
   /*thread_tick ();*/
