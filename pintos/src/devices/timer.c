@@ -20,7 +20,6 @@
 
 /* Number of timer ticks since OS booted. */
 static int64_t ticks;
-struct list waiting_list;
 
 /* Number of loops per timer tick.
    Initialized by timer_calibrate(). */
@@ -45,6 +44,7 @@ timer_init (void)
   outb (0x40, count & 0xff);
   outb (0x40, count >> 8);
   
+  struct list waiting_list;
   list_init(&waiting_list);
 
   intr_register_ext (0x20, timer_interrupt, "8254 Timer");
@@ -114,7 +114,6 @@ sort_waiting_list (struct list *list){
 void
 timer_sleep (int64_t ticks) 
 {
-  enum intr_level old_level;
   
   ASSERT (intr_get_level () == INTR_ON);
   
@@ -125,9 +124,7 @@ timer_sleep (int64_t ticks)
   list_push_front(&waiting_list, &thread_current()->elem);
   sort_ready_list(&waiting_list);
   
-  old_level = intr_disable();
   thread_block();
-  intr_set_level (old_level);
 }
 
 /* Suspends execution for approximately MS milliseconds. */
@@ -176,9 +173,6 @@ timer_interrupt (struct intr_frame *args UNUSED)
 {
   ticks++;
   if(list_begin(&waiting_list)!=list_end(&waiting_list)){
-    enum intr_level old_level;
-    old_level = intr_disable();
-    
     struct list_elem *wle;
     wle = list_back(&waiting_list);
     while(wle!=NULL && wle->prev!=NULL && wle->next!=NULL){
@@ -190,7 +184,6 @@ timer_interrupt (struct intr_frame *args UNUSED)
       list_entry(wle,struct thread, elem)->ticks--;
       wle=list_next(wle);
     }
-    intr_set_level (old_level);
   }
   thread_tick ();
 }
