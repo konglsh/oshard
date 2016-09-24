@@ -194,12 +194,13 @@ timer_interrupt (struct intr_frame *args UNUSED)
         list_entry(wle,struct thread, elem)->ticks--;
         wle=list_prev(wle);
       }*/
-      /*printf("%d\n",wle);*/
-    }
+      /*printf("%d\n",wle);
+      
+    }*/
     /*remove_ticks(wle);*/
     intr_set_level(old_level);
-    
   }
+  
   thread_tick ();
 }
 
