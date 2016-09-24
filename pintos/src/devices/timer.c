@@ -171,8 +171,8 @@ timer_interrupt (struct intr_frame *args UNUSED)
 {
   ticks++;
   if(list_begin(&waiting_list)!=list_end(&waiting_list)){
-    enum intr_level old_level;
-    old_level = intr_disable();
+    /*enum intr_level old_level;
+    old_level = intr_disable();*/
    
     while(list_entry(list_begin(&waiting_list),struct thread, elem)->ticks==0){
       if(list_entry(list_begin(&waiting_list),struct thread, elem)->status==THREAD_BLOCKED){
@@ -202,7 +202,7 @@ timer_interrupt (struct intr_frame *args UNUSED)
       
     }*/
     /*remove_ticks(wle);*/
-    intr_set_level(old_level);
+    /*intr_set_level(old_level);*/
   }
   
   /*thread_tick ();*/
