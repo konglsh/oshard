@@ -186,7 +186,7 @@ timer_interrupt (struct intr_frame *args UNUSED)
         printf("%d\n",ticks);
         tmp = list_remove(wle)->prev;
         thread_unblock(list_entry(wle,struct thread, elem));
-        wle =tmp
+        wle =tmp;
       }
       else{
         list_entry(wle,struct thread, elem)->ticks--;
