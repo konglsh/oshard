@@ -173,7 +173,7 @@ timer_interrupt (struct intr_frame *args UNUSED)
   if(list_begin(&waiting_list)!=list_end(&waiting_list)){
     /*enum intr_level old_level;
     old_level = intr_disable();*/
-   
+    printf("A\n");
     while(list_entry(list_begin(&waiting_list),struct thread, elem)->ticks==0){
         printf("%d\n", ticks);
         thread_unblock(list_entry(list_begin(&waiting_list),struct thread, elem));
