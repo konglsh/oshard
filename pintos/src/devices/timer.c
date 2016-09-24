@@ -169,6 +169,7 @@ timer_interrupt (struct intr_frame *args UNUSED)
 {
   ticks++;
   if(list_begin(&waiting_list)!=list_end(&waiting_list)){
+    intr_disable();
     struct list_elem *wle;
     wle = list_back(&waiting_list);
     while(wle!=NULL && wle->prev!=NULL && wle->next!=NULL){
