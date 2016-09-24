@@ -174,8 +174,9 @@ timer_interrupt (struct intr_frame *args UNUSED)
     enum intr_level old_level;
     old_level = intr_disable();
     struct list_elem *wle;
-    wle = list_head(&waiting_list)
-    while(list_entry(list_next(wle),struct thread, elem)->ticks>0){
+    wle = list_begin(&waiting_list);
+    
+    while(list_entry(list_begin(&waiting_list),struct thread, elem)->ticks==0){
       thread_unblock(list_entry(wle, struct thread, elem));
       list_pop_front(&waiting_list);
     }
