@@ -157,7 +157,8 @@ remove_ticks(struct list_elem *wle){
   if(wle!=NULL && wle->prev!=NULL && wle->next!=NULL){
     if(list_entry(wle,struct thread, elem)->ticks<=0){
         thread_unblock(list_entry(wle,struct thread, elem));
-        remove_ticks(list_remove(wle)->prev);
+        list_remove(wle);
+        remove_ticks(wle->prev);
     }
     else{
       list_entry(wle,struct thread, elem)->ticks--;
