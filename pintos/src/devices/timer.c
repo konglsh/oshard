@@ -189,7 +189,7 @@ timer_interrupt (struct intr_frame *args UNUSED)
       
     }*/
     /*remove_ticks(wle);*/
-      thread_foreach(list_entry(wle,struct,elem));
+      thread_foreach(list_entry(wle,struct thread,elem));
     thread_tick();
     }
   
