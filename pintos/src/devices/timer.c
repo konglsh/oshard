@@ -175,9 +175,10 @@ timer_interrupt (struct intr_frame *args UNUSED)
     old_level = intr_disable();
     struct list_elem *wle;
     wle = list_begin(&waiting_list);
-    barrier();
+    
     while(list_entry(list_begin(&waiting_list),struct thread, elem)->ticks==0){
       thread_unblock(list_entry(wle, struct thread, elem));
+      barrier();
       list_pop_front(&waiting_list);
     }
     /*while(wle!=NULL && wle->prev!=NULL && wle->next!=NULL){
