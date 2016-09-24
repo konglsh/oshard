@@ -172,7 +172,7 @@ timer_interrupt (struct intr_frame *args UNUSED)
   ticks++;
     if(list_begin(&waiting_list)!=list_end(&waiting_list)){
       struct list_elem *wle;
-      wle = &waiting_list->tail->prev;
+      wle = &waiting_list->tail.prev;
     
     while(wle!=NULL && wle->prev!=NULL && wle->next!=NULL){
       /*printf("%d\n",ticks);
