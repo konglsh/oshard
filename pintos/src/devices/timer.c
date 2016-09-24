@@ -20,7 +20,7 @@
 
 /* Number of timer ticks since OS booted. */
 static int64_t ticks;
-struct list waiting_list;
+static struct list waiting_list;
 
 /* Number of loops per timer tick.
    Initialized by timer_calibrate(). */
