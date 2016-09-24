@@ -175,7 +175,7 @@ timer_interrupt (struct intr_frame *args UNUSED)
     old_level = intr_disable();*/
    
     while(list_entry(list_begin(&waiting_list),struct thread, elem)->ticks==0){
-        printf("A\n");
+        printf("%d\n", ticks);
         thread_unblock(list_entry(list_begin(&waiting_list),struct thread, elem));
         thread_tick();
       list_pop_front(&waiting_list);
