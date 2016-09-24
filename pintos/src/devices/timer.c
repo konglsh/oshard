@@ -96,7 +96,7 @@ timer_elapsed (int64_t then)
   return timer_ticks () - then;
 }
 
-/*bool
+bool
 our_order3(struct list_elem *a, struct list_elem *b){
    int a_p = list_entry(a, struct thread, elem)->ticks;
    int b_p = list_entry(b, struct thread, elem)->ticks;
@@ -107,7 +107,7 @@ sort_waiting_list (struct list *list){
    list_less_func *less = &our_order3;
    
    list_sort(list, less,0);
-}*/
+}
 
 /* Suspends execution for approximately TICKS timer ticks. */
 void
@@ -117,9 +117,11 @@ timer_sleep (int64_t ticks)
   ASSERT (intr_get_level () == INTR_ON);
   thread_current()->ticks=ticks;
   list_push_front(&waiting_list, &thread_current()->elem);
-  sort_ready_list(&waiting_list);
-  intr_disable();
+  sort_waiting_list(&waiting_list);
+  enum intr_level old_level;
+  old_level = intr_disable();
   thread_block();
+  intr_set_level(old_level);
 }
 
 /* Suspends execution for approximately MS milliseconds. */
@@ -169,12 +171,21 @@ timer_interrupt (struct intr_frame *args UNUSED)
 {
   ticks++;
   if(list_begin(&waiting_list)!=list_end(&waiting_list)){
-    intr_disable();
+    enum intr_level old_level;
+    old_level = intr_disable();
     struct list_elem *wle;
-    wle = list_back(&waiting_list);
-    while(wle!=NULL && wle->prev!=NULL && wle->next!=NULL){
-      /*printf("%d\n",wle);
-      printf("%d\n",list_next(wle));*/
+    /*wle = list_head(&waiting_list)*/
+    for(wle = list_head(&waiting_list);wle!=list_end(&waiting_list);wle=list_remove(wle)){
+      if(list_entry(list_next(wle),struct thread, elem)->ticks==0){
+        thread_unblock(list_entry(list_next(wle),struct thread, elem));
+      }
+      else{
+        break;
+      }
+    }
+    /*while(wle!=NULL && wle->prev!=NULL && wle->next!=NULL){
+      printf("%d\n",wle);
+      printf("%d\n",list_next(wle));
       if(list_entry(wle,struct thread, elem)->ticks<=0){
         thread_unblock(list_entry(wle,struct thread, elem));
         wle =list_remove(wle)->prev;
@@ -182,10 +193,11 @@ timer_interrupt (struct intr_frame *args UNUSED)
       else{
         list_entry(wle,struct thread, elem)->ticks--;
         wle=list_prev(wle);
-      }
+      }*/
       /*printf("%d\n",wle);*/
     }
     /*remove_ticks(wle);*/
+    intr_set_level(old_level);
     
   }
   thread_tick ();
