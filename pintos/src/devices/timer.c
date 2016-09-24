@@ -179,6 +179,9 @@ timer_interrupt (struct intr_frame *args UNUSED)
         thread_unblock(list_entry(list_begin(&waiting_list),struct thread, elem));
         thread_tick();
       list_pop_front(&waiting_list);
+      if(list_begin(&waiting_list)==list_end(&waiting_list)){
+        break;
+      }
     }
      struct list_elem *wle;
     wle = list_begin(&waiting_list);
