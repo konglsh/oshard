@@ -173,8 +173,8 @@ timer_interrupt (struct intr_frame *args UNUSED)
   if(list_begin(&waiting_list)!=list_end(&waiting_list)){
     while(list_entry(list_begin(&waiting_list),struct thread, elem)->ticks==0){
         thread_unblock(list_entry(list_begin(&waiting_list),struct thread, elem));
-        list_front(&waiting_list)->next->prev=list_head(&waiting_list);
-        list_head(&waiting_list)->next=list_front(&waiting_list)->next;
+        list_front(&waiting_list)->next->prev=list_front(&waiting_list)->prev;
+        list_front(&waiting_list)->prev->next=list_front(&waiting_list)->next;
       if(list_begin(&waiting_list)==list_end(&waiting_list)){
         break;
       }
