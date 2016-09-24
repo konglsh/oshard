@@ -117,7 +117,7 @@ timer_sleep (int64_t ticks)
   ASSERT (intr_get_level () == INTR_ON);
   thread_current()->ticks=ticks;
   list_push_front(&waiting_list, &thread_current()->elem);
-  sort_waiting_list(&waiting_list);
+  sort_ready_list(&waiting_list);
   enum intr_level old_level;
   old_level = intr_disable();
   thread_block();
@@ -170,21 +170,9 @@ static void
 timer_interrupt (struct intr_frame *args UNUSED)
 {
   ticks++;
-  if(list_begin(&waiting_list)!=list_end(&waiting_list)){
-    while(list_entry(list_begin(&waiting_list),struct thread, elem)->ticks==0){
-        thread_unblock(list_entry(list_begin(&waiting_list),struct thread, elem));
-        list_begin(&waiting_list)->next->prev=list_begin(&waiting_list)->prev;
-        list_begin(&waiting_list)->prev->next=list_begin(&waiting_list)->next;
-      if(list_begin(&waiting_list)==list_end(&waiting_list)){
-        break;
-      }
-    }
-     struct list_elem *wle;
-    wle = list_begin(&waiting_list);
-    while(wle!=list_end(&waiting_list)){
-      list_entry(wle,struct thread, elem)->ticks--;
-      wle=wle->next;
-    }
+    if(list_begin(&waiting_list)!=list_end(&waiting_list)){
+      struct list_elem *wle;
+      wle = list_begin(&waiting_list);
     
     /*while(wle!=NULL && wle->prev!=NULL && wle->next!=NULL){
       printf("%d\n",wle);
@@ -196,13 +184,14 @@ timer_interrupt (struct intr_frame *args UNUSED)
       else{
         list_entry(wle,struct thread, elem)->ticks--;
         wle=list_prev(wle);
-      }*/
-      /*printf("%d\n",wle);
+      }
+      printf("%d\n",wle);
       
     }*/
     /*remove_ticks(wle);*/
+      thread_foreach(list_entry(wle,struct,elem));
     thread_tick();
-  }
+    }
   
   /*thread_tick ();*/
 }
