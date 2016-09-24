@@ -174,14 +174,10 @@ timer_interrupt (struct intr_frame *args UNUSED)
     enum intr_level old_level;
     old_level = intr_disable();
     struct list_elem *wle;
-    /*wle = list_head(&waiting_list)*/
-    for(wle = list_head(&waiting_list);wle!=list_end(&waiting_list);wle=list_remove(wle)){
-      if(list_entry(list_next(wle),struct thread, elem)->ticks==0){
-        thread_unblock(list_entry(list_next(wle),struct thread, elem));
-      }
-      else{
-        break;
-      }
+    wle = list_head(&waiting_list)
+    while(list_entry(list_next(wle),struct thread, elem)->ticks>0){
+      thread_unblock(list_entry(wle, struct thread, elem));
+      list_pop_front(&waiting_list);
     }
     /*while(wle!=NULL && wle->prev!=NULL && wle->next!=NULL){
       printf("%d\n",wle);
