@@ -20,6 +20,7 @@
 
 /* Number of timer ticks since OS booted. */
 static int64_t ticks;
+struct list waiting_list;
 
 /* Number of loops per timer tick.
    Initialized by timer_calibrate(). */
@@ -30,7 +31,6 @@ static bool too_many_loops (unsigned loops);
 static void busy_wait (int64_t loops);
 static void real_time_sleep (int64_t num, int32_t denom);
 
-struct list waiting_list;
 /* Sets up the 8254 Programmable Interval Timer (PIT) to
    interrupt PIT_FREQ times per second, and registers the
    corresponding interrupt. */
@@ -102,7 +102,6 @@ our_order3(struct list_elem *a, struct list_elem *b){
    int b_p = list_entry(b, struct thread, elem)->ticks;
    return a_p<b_p;
 }
-
 void
 sort_waiting_list (struct list *list){
    list_less_func *less = &our_order3;
@@ -114,16 +113,12 @@ sort_waiting_list (struct list *list){
 void
 timer_sleep (int64_t ticks) 
 {
-  
-  ASSERT (intr_get_level () == INTR_ON);
-  
-  
-  
   int64_t start = timer_ticks ();
+  ASSERT (intr_get_level () == INTR_ON);
   thread_current()->ticks=ticks;
   list_push_front(&waiting_list, &thread_current()->elem);
   sort_ready_list(&waiting_list);
-  
+  intr_disable();
   thread_block();
 }
 
@@ -154,19 +149,17 @@ timer_print_stats (void)
 {
   printf ("Timer: %"PRId64" ticks\n", timer_ticks ());
 }
-/*
+
 void
 remove_ticks(struct list_elem *wle){
   if(wle!=NULL && wle->prev!=NULL && wle->next!=NULL){
     if(list_entry(wle,struct thread, elem)->ticks<=0){
         thread_unblock(list_entry(wle,struct thread, elem));
-        wle->next->prev = wle->prev;
-        wle->prev->next = wle->next;
     }
     list_entry(wle,struct thread, elem)->ticks--;
-    remove_ticks(&list_prev(wle));
+    remove_ticks(list_next(wle));
   }
-}*/
+}
 /* Timer interrupt handler. */
 static void
 timer_interrupt (struct intr_frame *args UNUSED)
@@ -174,16 +167,19 @@ timer_interrupt (struct intr_frame *args UNUSED)
   ticks++;
   if(list_begin(&waiting_list)!=list_end(&waiting_list)){
     struct list_elem *wle;
-    wle = list_back(&waiting_list);
-    while(wle!=NULL && wle->prev!=NULL && wle->next!=NULL){
+    wle = list_begin(&waiting_list);
+    /*while(wle!=NULL && wle->prev!=NULL && wle->next!=NULL){
+      printf("%d\n",wle);
+      printf("%d\n",list_next(wle));
       if(list_entry(wle,struct thread, elem)->ticks<=0){
         thread_unblock(list_entry(wle,struct thread, elem));
-        wle->prev->next=wle->next;
-        wle->next->prev=wle->prev;
       }
       list_entry(wle,struct thread, elem)->ticks--;
       wle=list_next(wle);
-    }
+      printf("%d\n",wle);
+    }*/
+    remove_ticks(wle);
+    
   }
   thread_tick ();
 }
@@ -209,7 +205,6 @@ too_many_loops (unsigned loops)
 
 /* Iterates through a simple loop LOOPS times, for implementing
    brief delays.
-
    Marked NO_INLINE because code alignment can significantly
    affect timings, so that if this function was inlined
    differently in different places the results would be difficult
@@ -250,4 +245,3 @@ real_time_sleep (int64_t num, int32_t denom)
       busy_wait (loops_per_tick * num / 1000 * TIMER_FREQ / (denom / 1000)); 
     }
 }
-
