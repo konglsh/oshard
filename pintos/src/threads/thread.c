@@ -484,6 +484,25 @@ next_thread_to_run (void)
   }
 }
 
+void
+thread_foreach(struct thread *ct){
+   struct thread *next;
+   if(ct->ticks<=0){
+      thread_unblock(ct);
+      next = list_remove(ct->elem);
+      if(next!=NULL){
+         thread_foreach(next);
+      }
+   }
+   else{
+      ct->ticks--;
+      next=list_next(ct->elem);
+      if(next!=NULL){
+         thread_foreach(next);
+      }
+   }
+}
+
 
 /* Completes a thread switch by activating the new thread's page
    tables, and, if the previous thread is dying, destroying it.
