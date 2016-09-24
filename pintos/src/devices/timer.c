@@ -96,19 +96,6 @@ timer_elapsed (int64_t then)
   return timer_ticks () - then;
 }
 
-bool
-our_order3(struct list_elem *a, struct list_elem *b){
-   int a_p = list_entry(a, struct thread, elem)->ticks;
-   int b_p = list_entry(b, struct thread, elem)->ticks;
-   return a_p<b_p;
-}
-void
-sort_waiting_list (struct list *list){
-   list_less_func *less = &our_order3;
-   
-   list_sort(list, less,0);
-}
-
 /* Suspends execution for approximately TICKS timer ticks. */
 void
 timer_sleep (int64_t ticks) 
