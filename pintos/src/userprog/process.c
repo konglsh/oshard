@@ -99,7 +99,7 @@ start_process (void *f_name)
   for(i;i>=0;i--){
      if_.esp-=4;
      if(word_lengths[i]==0){
-      *((char *)if_.esp)=0}
+      *((char *)if_.esp)=0;}
      else{
         initial_esp-=word_lengths[i]+1;
         *((char *)if_.esp)=initial_esp;}}
@@ -111,7 +111,7 @@ start_process (void *f_name)
   *((int *)if_.esp)=argc;
   
   if_.esp-=4;
-  *(if_.esp)=0;
+  *((void *)if_.esp)=0;
    
   /* Start the user process by simulating a return from an
      interrupt, implemented by intr_exit (in
