@@ -67,7 +67,7 @@ start_process (void *f_name)
   int length;
   void *initial_esp;
   length=strlen(file_name);
-  strcpy(fncopy,file_name,length+1);
+  strlcpy(fncopy,file_name,length+1);
   /* Initialize interrupt frame and load executable. */   
    
   memset (&if_, 0, sizeof if_);
@@ -111,7 +111,7 @@ start_process (void *f_name)
   *((int *)if_.esp)=argc;
   
   if_.esp-=4;
-  *((void *)if_.esp)=0;
+  *((void (*) ()) if_.esp)=0;
    
   /* Start the user process by simulating a return from an
      interrupt, implemented by intr_exit (in
