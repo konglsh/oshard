@@ -93,22 +93,22 @@ start_process (void *f_name)
   if_.esp-=length+1;
   memcpy(if_.esp,fncopy,length+1);
     
-  if_.esp-=1;
-  *(if_.esp)=0;
+  if_.esp-=4-((length+1)%4);
+  *((int *)if_.esp)=0;
    
   for(i;i>=0;i--){
      if_.esp-=4;
      if(word_lengths[i]==0){
-      *(if_.esp)=0}
+      *((char *)if_.esp)=0}
      else{
         initial_esp-=word_lengths[i]+1;
-        *(if_.esp)=initial_esp;}}
+        *((char *)if_.esp)=initial_esp;}}
    
   if_.esp-=4;
-  *(if_.esp)=if_.esp+4;
+  *((char **)if_.esp)=if_.esp+4;
   
   if_.esp-=4;
-  *(if_.esp)=argc;
+  *((int *)if_.esp)=argc;
   
   if_.esp-=4;
   *(if_.esp)=0;
