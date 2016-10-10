@@ -135,7 +135,8 @@ start_process (void *f_name)
 int
 process_wait (tid_t child_tid UNUSED) 
 {
-  return -1;
+   while(1);
+   return -1;
 }
 
 /* Free the current process's resources. */
