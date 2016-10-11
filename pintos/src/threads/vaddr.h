@@ -81,9 +81,10 @@ ptov (uintptr_t paddr)
 static inline uintptr_t
 vtop (const void *vaddr)
 {
-  ASSERT (is_kernel_vaddr (vaddr));
-
-  return (uintptr_t) vaddr - (uintptr_t) PHYS_BASE;
+  /*ASSERT (is_kernel_vaddr (vaddr));*/
+  if(is_kernel_vaddr(vaddr)){
+      return (uintptr_t) vaddr - (uintptr_t) PHYS_BASE;}
+   else{return (uintptr_t) PHYS_BASE - (uintptr_t) vaddr;}
 }
 
 #endif /* threads/vaddr.h */
