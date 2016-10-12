@@ -84,7 +84,7 @@ struct thread
     uint8_t *stack;                     /* Saved stack pointer. */
     int priority[10];                       /* Priority. */
     int pp;                             
-    struct thread *donating;            /* Pointer of thread which this thread donates priority */
+    /*struct thread *donating;    */        /* Pointer of thread which this thread donates priority */
     /* Shared between thread.c and synch.c. */
     struct list_elem elem;              /* List element. */
     int64_t ticks;
